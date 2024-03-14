@@ -10,16 +10,18 @@ const message = require('../modulo/config.js')
 
 //Import do arquivo DAO quue fará a comunicação com o banco de dados
 const filmeDAO = require('../model/DAO/filmes.js')
+const { application } = require('express')
 
 //função para validar e inserir um novo filme 
-const setInserirNovoFilme = async function(dadosFilme){
+const setInserirNovoFilme = async function(dadosFilme, contentType){
 
-
-    //cria o objeto JSON para devolver os dados criados na requisição
+try{
+    if(String(contentType).toLowerCase() == 'application/json'){
+        //cria o objeto JSON para devolver os dados criados na requisição
     let novoFilmeJson = {}
 
 
-    //validação d ecampos obrigatórios ou com digitação inválida
+    //validação de campos obrigatórios ou com digitação inválida
     if(dadosFilme.nome == ''                || dadosFilme.nome == undefined              || dadosFilme.nome == null             || dadosFilme.nome.length > 80 ||
        dadosFilme.sinopse == ''             || dadosFilme.sinopse == undefined           || dadosFilme.sinopse == null          || dadosFilme.sinopse.length > 65000 ||
        dadosFilme.duracao == ''             || dadosFilme.duracao == undefined           || dadosFilme.duracao == null          || dadosFilme.duracao.length > 8 ||
@@ -79,29 +81,61 @@ const setInserirNovoFilme = async function(dadosFilme){
             }
 
         }
-
-        
-
-        
+ 
     
     }
+
+    }else{
+        return message.ERROR_CONTENT_TYPE // 415
+    }
+
+} catch (error){
+    return message.ERROR_INTERNAL_SERVER // 500 erro na controller 
+}
+
+
+    
 }
 
 //função para validar e atualizar filme 
-const setAtualizarFilme = async function(){
-
+const setAtualizarFilme = async function(dadosFilme, contentType ){
+    try{
+        if(String(contentType).toLowerCase() == 'application/json'){
+            
+        }
+    }
 }
 
 //função para excluir um filme 
-const setExcluirFilme = async function(){
+const setExcluirFilme = async function(id){
+    try{
 
+        let idFilme = id
+        let filmesJson = {}
+
+        if(idFilme=='' || idFilme == undefined || isNaN(idFilme)){
+            return message.ERROR_INVALID_ID
+        }else{
+    
+            
+            let dadosFilmes = await filmeDAO.deleteFilme(idFilme)
+    
+            
+            if(dadosFilmes)
+                return message.SUCESS_DETELE_ITEM
+            
+        }
+
+    }catch(error){
+        return message.ERROR_INTERNAL_SERVER
+    }
 }
 
 //função para retornar todos os filmes
 const getListarFilmes = async function(){
 
-
-    //criia o objeto json
+    try{
+        //criia o objeto json
     let filmesJson = {}
 
     //chama a função do DAO para retornar os dados da tabela de filme
@@ -127,12 +161,18 @@ const getListarFilmes = async function(){
     }else{
         return message.ERROR_INTERNAL_SERVER_DB //500
     }
+    }catch(error){
+        return message.ERROR_INTERNAL_SERVER 
+    }
+
+    
 }
 
 //função para buscar filme pelo ID
 const getBuscarFilme = async function(id){
 
-    //recebe o id do filme
+    try{
+        //recebe o id do filme
     let idFilme = id
 
     //cria o objeto json
@@ -169,12 +209,18 @@ const getBuscarFilme = async function(id){
         }
     }
 
+    }catch(error){
+        return message.ERROR_INTERNAL_SERVER
+    }
+
     
     
 }
 
 const getFilmeByNome = async function(nome){
-    let nomeFilme = nome
+
+    try{
+        let nomeFilme = nome
     let filmesJson = {}
 
    //validação para verificar se o nome é válido
@@ -206,6 +252,9 @@ const getFilmeByNome = async function(nome){
                 return message.ERROR_INTERNAL_SERVER_DB //500
             }
         }
+    }catch(error){
+        return message.ERROR_INTERNAL_SERVER
+    }
     
 
 

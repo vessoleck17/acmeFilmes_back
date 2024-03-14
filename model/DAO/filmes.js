@@ -87,13 +87,58 @@ const insertFilme = async function(dadosFilme){
 }
 
 //função para atualizar um filme no banco de dados
-const updateFilmes = async function(){
+const updateFilmes = async function(dadosFilme){
+    try{
+        let sql 
+        
+        if(
+            dadosFilme.data_relancamento!= null &&
+            dadosFilme.data_relancamento != '' &&
+            dadosFilme.data_relancamento != undefined
+        ){
+            sql = `update tbl_filmes set (
+                                            
+                                            nome = '${dadosFilme.nome}',
+                                            sinopse = '${dadosFilme.sinopse}',
+                                            duracao = '${dadosFilme.duracao}',
+                                            data_lancamento = '${dadosFilme.data_lancamento}',
+                                            data_relancamento = null,
+                                            foto_capa = '${dadosFilme.foto_capa}',
+                                            valor_unitario = '${dadosFilme.valor_unitario}'
+                
+                ) where id = ${id}`
+        }else{
+            sql = `update tbl_filmes set (
+                                            
+                nome = '${dadosFilme.nome}',
+                sinopse = '${dadosFilme.sinopse}',
+                duracao = '${dadosFilme.duracao}',
+                data_lancamento = '${dadosFilme.data_lancamento}',
+                data_relancamento = '${dadosFilme.data_relancamento},
+                foto_capa = '${dadosFilme.foto_capa}',
+                valor_unitario = '${dadosFilme.valor_unitario}'
 
+                ) where id = ${id}`
+        }
+
+    }catch(error){
+        return false
+    } 
 }
 
 //função para deletar um filme do banco de dados
-const deleteFilme = async function(){
+const deleteFilme = async function(id){
+    try{
 
+        let sql = `delete from tbl_filme where id = ${id}`
+
+        let rsFilmes = await prisma.$queryRawUnsafe(sql)
+
+        return rsFilmes
+
+    }catch(error){
+        return false
+    }
 }
 
 //função para listar todos os filmes do banco de dados

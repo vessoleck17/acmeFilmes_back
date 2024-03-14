@@ -134,12 +134,15 @@ app.get('/v2/ACME_FILMES/filme/:id', cors(), async function(request, response){
 
 app.post('/v2/acmefilmes/filme', cors(), bodyParserJson, async function(request, response){
 
+    //Recebe o content-type com o tipo de dados encaminhado na requisição
+    let contentType = request.headers['content-type']
+
 
     //recebe todos os dados encaminhados na requisição pelo body
     let dadosBody = request.body
 
     //encaminha os dados para a controller enviar para o DAO
-    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody)
+    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
 
     response.status(resultDadosNovoFilme.status_code)
     response.json(resultDadosNovoFilme)
@@ -156,6 +159,26 @@ app.get('/v1/ACME_FILMES/filmes/filtro', cors(), async function(request, respons
 
     response.status(dadosFilme.status_code)
     response.json(dadosFilme)
+})
+
+app.delete('/v1/ACME_FILMES/deleteFilme/:id', cors(), async function(request,response){
+    let idFilme = request.params.id
+
+    let dadosFilme = await controllerFilmes.setExcluirFilme(idFilme)
+
+    response.status(dadosFilme.status_code)
+    response.json(dadosFilme)
+})
+
+app.put('/v1/ACME_FILMES/updateFilme/:id', cors(), bodyParserJson,  async function(request,response){
+    let contentType = request.headers['content-type']
+    let dadosBody = request.body
+
+    let atualizacaoFilme = await controllerFilmes.setAtualizarFilme(dadosBody, contentType)
+
+    response.status(atualizacaoFilme.status_code)
+    response.json(atualizacaoFilme)
+
 })
 
 
