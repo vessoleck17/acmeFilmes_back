@@ -87,8 +87,10 @@ const insertFilme = async function(dadosFilme){
 }
 
 //função para atualizar um filme no banco de dados
-const updateFilmes = async function(dadosFilme){
+const updateFilmes = async function(id, dadosFilme){
     try{
+
+        let idFilme = id
         let sql 
         
         if(
@@ -96,29 +98,32 @@ const updateFilmes = async function(dadosFilme){
             dadosFilme.data_relancamento != '' &&
             dadosFilme.data_relancamento != undefined
         ){
-            sql = `update tbl_filmes set (
+            sql = `update tbl_filme set
                                             
                                             nome = '${dadosFilme.nome}',
                                             sinopse = '${dadosFilme.sinopse}',
                                             duracao = '${dadosFilme.duracao}',
                                             data_lancamento = '${dadosFilme.data_lancamento}',
-                                            data_relancamento = null,
+                                            data_relancamento = '${dadosFilme.data_relancamento}',
                                             foto_capa = '${dadosFilme.foto_capa}',
                                             valor_unitario = '${dadosFilme.valor_unitario}'
                 
-                ) where id = ${id}`
+                 where id = ${idFilme}`
+
+                 console.log(sql)
         }else{
-            sql = `update tbl_filmes set (
+            sql = `update tbl_filme set 
                                             
                 nome = '${dadosFilme.nome}',
                 sinopse = '${dadosFilme.sinopse}',
                 duracao = '${dadosFilme.duracao}',
                 data_lancamento = '${dadosFilme.data_lancamento}',
-                data_relancamento = '${dadosFilme.data_relancamento},
+                data_relancamento = null,
                 foto_capa = '${dadosFilme.foto_capa}',
                 valor_unitario = '${dadosFilme.valor_unitario}'
 
-                ) where id = ${id}`
+              where id = ${idFilme}`
+              console.log(sql)
         }
 
         let result = await prisma.$executeRawUnsafe(sql)
@@ -129,6 +134,7 @@ const updateFilmes = async function(dadosFilme){
         return false
 
     }catch(error){
+        console.log(error)
         return false
     } 
 }
