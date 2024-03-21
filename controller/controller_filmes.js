@@ -97,7 +97,7 @@ try{
     
 }
 
-//função para validar e atualizar filme 
+// função para validar e atualizar filme 
 const setAtualizarFilme = async function(dadosFilme, contentType ){
     try{
         if(String(contentType).toLowerCase() == 'application/json'){
@@ -111,21 +111,29 @@ const setExcluirFilme = async function(id){
     try{
 
         let idFilme = id
-        let filmesJson = {}
 
         if(idFilme=='' || idFilme == undefined || isNaN(idFilme)){
             return message.ERROR_INVALID_ID
         }else{
-    
-            
-            let dadosFilmes = await filmeDAO.deleteFilme(idFilme)
-    
-            
-            if(dadosFilmes)
-                return message.SUCESS_DETELE_ITEM
-            
-        }
+        
+            let filmeById = await filmeDAO.selectByIdFilme(idFilme)
 
+            if(filmeById.length>0){
+                
+                let deleteFilme = await filmeDAO.deleteFilme(idFilme)
+
+                if(deleteFilme){
+                    return message.SUCESS_DETELE_ITEM
+                }else{
+                    return message.ERROR_NOT_FOUND
+                }
+
+            }
+            
+            return message.ERROR_NOT_FOUND
+                
+        }
+            
     }catch(error){
         return message.ERROR_INTERNAL_SERVER
     }

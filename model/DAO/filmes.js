@@ -121,6 +121,13 @@ const updateFilmes = async function(dadosFilme){
                 ) where id = ${id}`
         }
 
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result)
+        return true
+        else 
+        return false
+
     }catch(error){
         return false
     } 
