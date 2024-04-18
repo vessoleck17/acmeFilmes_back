@@ -134,7 +134,7 @@ const updateFilmes = async function(id, dadosFilme){
         return false
 
     }catch(error){
-        console.log(error)
+    
         return false
     } 
 }
@@ -145,7 +145,7 @@ const deleteFilme = async function(id){
 
         let sql = `delete from tbl_filme where id = ${id}`
 
-        let rsFilmes = await prisma.$queryRawUnsafe(sql)
+        let rsFilmes = await prisma.$executeRawUnsafe(sql)
 
         return rsFilmes
 
@@ -206,11 +206,11 @@ const selectByNomeFilme = async function (nome){
     }
 }
 
-//finção para retornar o id do filme
+//função para retornar o id do filme
 const selectId = async function (){
     try{
 
-        //script sql para pegar o últim id
+        //script sql para pegar o último id
         let sql = `select cast(last_insert_id() AS DECIMAL) as id from tbl_filme limit 1`
         let rsFilme = await prisma.$queryRawUnsafe(sql)
         
