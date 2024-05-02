@@ -74,6 +74,7 @@ const insertFilme = async function(dadosFilme){
         //$queryRawUnsafe() - serve para executar scripts com retorno de dados (selects)
         let result = await prisma.$executeRawUnsafe(sql)
 
+       
         if(result)
         return true
         else 
@@ -81,6 +82,7 @@ const insertFilme = async function(dadosFilme){
 
 
             }catch(error){
+                console.log(error)
                 return false
             }
     

@@ -24,11 +24,10 @@ const selectAllClassificacoes = async function(){
 //deletar uma classificação do banco de dados
 const deleteClassificacao = async function(id){
     try{
-        let sql = `delete from tbl_classificaco where id = ${id}`
+        let sql = `delete from tbl_classificacao where id = ${id}`
         let rsClassificaco = await prisma.$executeRawUnsafe(sql)
-
         return rsClassificaco
-    } catch(error){
+    } catch(error){;
         return false
     }
 }
@@ -77,14 +76,16 @@ const selectClassificacaoById = async function(id){
         let rsClassificaco = await prisma.$queryRawUnsafe(sql)
 
         return rsClassificaco
+
     }catch(error){
         return false
     }
 }
+
 //função para pegar o id da classificacao
 const selectId = async function(){
     try{
-        let sql = `select cast (last_insert_id() AS DECIMAL) as id from tbl_classificacao limit 1`
+        let sql = `select cast(last_insert_id() AS DECIMAL) as id from tbl_filme limit 1`
         let rsClassificaco = await prisma.$queryRawUnsafe(sql)
 
         return rsClassificaco
@@ -93,7 +94,7 @@ const selectId = async function(){
     }
 }
 
-exports.module = {
+module.exports = {
     selectAllClassificacoes,
     deleteClassificacao,
     insertClassificacao,

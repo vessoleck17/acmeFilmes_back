@@ -22,7 +22,7 @@ const setInserirNovoGenero = async function(dadosGenero, contentType){
             let novoGeneroJson = {}
 
             //validação de campos obrigatórios ou com digitação inválida
-            if(dadosGenero.nome == ''                || dadosFilme.nome == undefined              || dadosFilme.nome == null             || dadosFilme.nome.length > 45){
+            if(dadosGenero.nome == ''                || dadosGenero.nome == undefined              || dadosGenero.nome == null             || dadosGenero.nome.length > 45){
                 return message.ERROR_REQUIRED_FIELDS //400
             }else{
 
@@ -37,7 +37,7 @@ const setInserirNovoGenero = async function(dadosGenero, contentType){
                     novoGeneroJson.status_code = message.SUCESS_CREATED_ITEM.status_code
                     novoGeneroJson.message = message.SUCESS_CREATED_ITEM.message
 
-                    return novoGeneroJson
+                    return novoGeneroJson, message.SUCESS_CREATED_ITEM
 
                 }else{
                     return message.ERROR_INTERNAL_SERVER_DB
@@ -63,7 +63,7 @@ const setAtualizarGenero = async function(id, dadosGenero, contentType){
             if(String(contentType).toLowerCase() == 'application/json'){
                 let jsonUpdate = {}
 
-                if(dadosGenero.nome == ''                || dadosFilme.nome == undefined              || dadosFilme.nome == null             || dadosFilme.nome.length > 45){
+                if(dadosGenero.nome == ''                || dadosGenero.nome == undefined              || dadosGenero.nome == null             || dadosGenero.nome.length > 45){
                     return message.ERROR_REQUIRED_FIELDS //400
                 }else{
                     let generoById = await generoDAO.selectGeneroById(idGenero)
@@ -147,7 +147,7 @@ const getListarGeneros = async function(){
     }
 }
 //função para buscar o genero pelo id
-const getBuscarById = async function(id){
+const getBuscarGeneroById = async function(id){
     try{
 
         let idGenero = id
@@ -185,5 +185,5 @@ module.exports = {
     setAtualizarGenero,
     setExcluirGenero,
     getListarGeneros,
-    getBuscarById
+    getBuscarGeneroById
 }

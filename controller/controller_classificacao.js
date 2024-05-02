@@ -16,7 +16,7 @@ const {application} = require('express')
 const setInserirNovaClassificacao = async function (dadosClassificacao, contentType){
     try{
 
-        if(String(contentType).toLocaleUpperCase() == 'application/json'){
+        if(String(contentType).toLowerCase() == 'application/json'){
             let classificacaoJson = {}
 
             if(
@@ -34,7 +34,6 @@ const setInserirNovaClassificacao = async function (dadosClassificacao, contentT
 
                     //armazenando o último id
                     let idClassificacao = await classificacaoDAO.selectId()
-
                     dadosClassificacao.id = idClassificacao[0].id
 
                     classificacaoJson.classificacao = dadosClassificacao
@@ -68,8 +67,10 @@ const setAtualizarClassificacao = async function (id, dadosClassificacao, conten
             if(String(contentType).toLowerCase() == 'application/json'){
                 let jsonUpdate = {}
 
+                
+
                 if(dadosClassificacao.icon == ''                || dadosClassificacao.icon == undefined              || dadosClassificacao.icon == null             || dadosClassificacao.icon.length > 150 ||
-                    dadosClassificacao.nome == ''             || dadosClassificacao.nome == undefined           || dadosClassificacao.nome == null          || dadosClassificacao.nomedadosFilme.nome.length > 50 ||
+                    dadosClassificacao.nome == ''             || dadosClassificacao.nome == undefined           || dadosClassificacao.nome == null          || dadosClassificacao.nome.length > 50 ||
                     dadosClassificacao.descricao == ''             || dadosClassificacao.descricao == undefined           || dadosClassificacao.descricao == null          || dadosClassificacao.descricao.length > 200
                 ){
 
@@ -114,6 +115,7 @@ const setAtualizarClassificacao = async function (id, dadosClassificacao, conten
         }
 
     }catch(error){
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER
 
     }
@@ -126,9 +128,8 @@ const setExcluirClassificacao = async function (id){
         if(idClassificacao == '' || idClassificacao == null || idClassificacao == undefined){
             return message.ERROR_INVALID_ID
         }else{
-            let classificacaoById = await classificacaoDAO.selectClassificacaoById(idClassificacao)
 
-            if(classificacaoById.length>0){
+            
                 let deleteClassificacao = await classificacaoDAO.deleteClassificacao(idClassificacao)
 
                 if(deleteClassificacao){
@@ -136,9 +137,8 @@ const setExcluirClassificacao = async function (id){
                 }else{
                     return message.ERROR_NOT_FOUND
                 }
-            }else{
-                return message.ERROR_NOT_FOUND
-            }
+            
+            
         }
 
     }catch(error){
@@ -173,7 +173,7 @@ const getListarClassificacao = async function(){
     }
 }
 //buscar classificação pelo id
-const getBuscarById = async function(id){
+const getBuscarClassificacaoById = async function(id){
     try{
 
         let idClassificacao = id
@@ -188,10 +188,10 @@ const getBuscarById = async function(id){
             if(dadosClassificacao){
 
                 if(dadosClassificacao.length>0){
-                    classificacaoJson.genero = dadosGenero
+                    classificacaoJson.classificacao = dadosClassificacao
                     classificacaoJson.status_code = 200
 
-                    return generoJson
+                    return classificacaoJson
                 }else{
                     return message.ERROR_NOT_FOUND
                 }
@@ -213,6 +213,6 @@ module.exports = {
     setAtualizarClassificacao,
     setExcluirClassificacao,
     getListarClassificacao,
-    getBuscarById
+    getBuscarClassificacaoById
 
 }

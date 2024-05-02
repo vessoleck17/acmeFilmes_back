@@ -15,10 +15,11 @@ const prisma = new PrismaClient()
 //inserir genero no banco de dados
 const insertGenero = async function(dadosGenero){
     try {
-        let sql = `insert into tbl_genero (nome) values 
-        ('${dadosGenero.nome})`
-
+        const sql = `insert into tbl_genero (nome) values 
+        ('${dadosGenero.nome}');`
+        
         let result = await prisma.$executeRawUnsafe(sql)
+       
 
         if(result)
         return true
@@ -33,7 +34,7 @@ const insertGenero = async function(dadosGenero){
 const updateGenero = async function(id, dadosGenero){
     try{
         let idGenero = id
-        let sql = `update tbl_genero set nome = '${dadosGenero.nome} where id = ${idGenero}`
+        let sql = `update tbl_genero set nome = '${dadosGenero.nome}' where id = ${idGenero}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
@@ -45,6 +46,7 @@ const updateGenero = async function(id, dadosGenero){
         return false
     }
 }
+
 //deletar genero no bnaco de dados
 const deleteGenero = async function(id){
 
