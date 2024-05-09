@@ -2,7 +2,7 @@
 const message = require('../modulo/config.js')
 
 //Import do arquivo DAO que fará a comunicação com o banco de dados
-const DiretorDAO = require('../model/DAO/diretor.js')
+const diretorDAO = require('../model/DAO/diretor.js')
 const { application } = require('express')
 
 //função para validar e inserir um novo Diretor 
@@ -18,11 +18,11 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
         if(dadosDiretor.nome == ''                || dadosDiretor.nome == undefined              || dadosDiretor.nome == null             || dadosDiretor.nome.length > 100 ||
            dadosDiretor.data_nascimento == ''     || dadosDiretor.data_nascimento == undefined   || dadosDiretor.data_nascimento == null  || dadosDiretor.data_nascimento.length != 10 ||
            dadosDiretor.foto == ''                || dadosDiretor.foto == undefined              || dadosDiretor.foto == null             || dadosDiretor.foto.length > 200 ||
-           dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia > 200 ||
-           dadosDiretor.id_sexo == ''             ||  dadosDiretor.id_sexo == undefined          || dadosDiretor.id_sexo == null          || dadosDiretor.id-sexo > 3             
+           dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia.length > 200 ||
+           dadosDiretor.tbl_sexo_id == ''             ||  dadosDiretor.tbl_sexo_id == undefined          || dadosDiretor.tbl_sexo_id == null          || dadosDiretor.tbl_sexo_id.length > 3             
     
         ){
-            
+            console.log(dadosDiretor)
             return message.ERROR_REQUIRED_FIELDS //400
             
         }else{
@@ -46,11 +46,11 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
             }
     
             //validação para verificar se podemos encaminhar os dados para o DAO
-            if (validateStatus ){
+            if (validateStatus = true ){
     
     
                 //encaminha os dados do Diretor para o DAO inserir no BD
-                let novoDiretor = await DiretorDAO.insertDiretor()
+                let novoDiretor = await diretorDAO.insertDiretor()
             
                 
     
@@ -58,11 +58,11 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
                 //cria o json de retorno dos dados (201)
                  if(novoDiretor){
     
-                    let idDiretor = await DiretorDAO.selectId()
+                    let idDiretor = await diretorDAO.selectId()
                     dadosDiretor.id = idDiretor[0].id
     
                    
-                    novoDiretorJson.Diretor = dadosDiretor
+                    novoDiretorJson.diretor = dadosDiretor
                     novoDiretorJson.status = message.SUCESS_CREATED_ITEM.status
                     novoDiretorJson.status_code = message.SUCESS_CREATED_ITEM.status_code
                     novoDiretorJson.message = message.SUCESS_CREATED_ITEM.message
@@ -83,6 +83,7 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
         }
     
     } catch (error){
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER // 500 erro na controller 
     }
     
@@ -108,8 +109,8 @@ const setAtualizarDiretor = async function(id, dadosDiretor, contentType){
                         if( dadosDiretor.nome == ''                || dadosDiretor.nome == undefined              || dadosDiretor.nome == null             || dadosDiretor.nome.length > 100 ||
                             dadosDiretor.data_nascimento == ''     || dadosDiretor.data_nascimento == undefined   || dadosDiretor.data_nascimento == null  || dadosDiretor.data_nascimento.length != 10 ||
                             dadosDiretor.foto == ''                || dadosDiretor.foto == undefined              || dadosDiretor.foto == null             || dadosDiretor.foto.length > 200 ||
-                            dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia > 300 ||
-                            dadosDiretor.id_sexo == ''             ||  dadosDiretor.id_sexo == undefined          || dadosDiretor.id_sexo == null          || dadosDiretor.id_sexo > 100             
+                            dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia.length > 300 ||
+                            dadosDiretor.tbl_sexo_id == ''             ||  dadosDiretor.tbl_sexo_id == undefined          || dadosDiretor.tbl_sexo_id == null          || dadosDiretor.tbl_sexo_id.length > 100             
                         
         ){
                                     
@@ -131,16 +132,16 @@ const setAtualizarDiretor = async function(id, dadosDiretor, contentType){
                                 validateStatus = true
                             }
                             
-                            let DiretorById = await DiretorDAO.selectByIdDiretor(idDiretor)
+                            let diretorById = await diretorDAO.selectByIdDiretor(idDiretor)
     
-                                if(DiretorById.length>0){
+                                if(diretorById.length>0){
                                         
                                     if (validateStatus ){
                             
-                                        let updateDiretor = await DiretorDAO.updateDiretor(idDiretor, dadosDiretor)
+                                        let updateDiretor = await diretorDAO.updateDiretor(idDiretor, dadosDiretor)
     
                                             if(updateDiretor){
-                                                jsonUpdate.Diretor = dadosDiretor
+                                                jsonUpdate.diretor = dadosDiretor
                                                 jsonUpdate.status = message.SUCESS_CREATED_ITEM.status
                                                 jsonUpdate.status_code = message.SUCESS_CREATED_ITEM.status_code
                                                 jsonUpdate.message = message.SUCESS_CREATED_ITEM.message
@@ -167,6 +168,7 @@ const setAtualizarDiretor = async function(id, dadosDiretor, contentType){
                             
     
                             }catch(error){
+                                console.log(error)
                                 return message.ERROR_INTERNAL_SERVER
                             }
     }
@@ -182,21 +184,24 @@ const setExcluirDiretor = async function(id){
                 return message.ERROR_INVALID_ID
             }else{
             
-                let DiretorById = await DiretorDAO.selectByIdDiretor(idDiretor)
+                let diretorById = await diretorDAO.selectByIdDiretor(idDiretor)
     
-                if(DiretorById.length>0){
+                if(diretorById.length>0){
                     
-                    let deleteDiretor = await DiretorDAO.deleteDiretor(idDiretor)
+                    let deleteDiretor = await diretorDAO.deleteDiretor(idDiretor)
     
                     if(deleteDiretor){
                         return message.SUCESS_DETELE_ITEM
                     }else{
+                
                         return message.ERROR_NOT_FOUND
                     }
     
+                } else{
+                    return message.ERROR_NOT_FOUND
                 }
                 
-                return message.ERROR_NOT_FOUND
+                
                     
             }
                 
@@ -210,10 +215,10 @@ const getListarDiretor = async function(){
     
         try{
             //cria o objeto json
-        let DiretorJson = {}
+        let diretorJson = {}
     
         //chama a função do DAO para retornar os dados da tabela de Diretor
-        let dadosDiretor = await DiretorDAO.selectAllDiretores();
+        let dadosDiretor = await diretorDAO.selectAllDiretores();
     
     
         //verifica de o DAO retornou os dados
@@ -224,10 +229,10 @@ const getListarDiretor = async function(){
             
             
                 //cria o json para retorno
-           DiretorJson.Diretor = dadosDiretor
-           DiretorJson.status_code = 200
+           diretorJson.diretor = dadosDiretor
+           diretorJson.status_code = 200
     
-            returnDiretorJson
+            return diretorJson
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
@@ -250,7 +255,7 @@ const getBuscarDiretorById = async function(id){
         let idDiretor = id
     
         //cria o objeto json
-        let DiretorJson = {}
+        let diretorJson = {}
     
     
         //validação para verificar se o ID é válido
@@ -260,7 +265,7 @@ const getBuscarDiretorById = async function(id){
         }else{
     
             //encaminha o ID para o DAO buscar o bd
-            let dadosDiretor = await DiretorDAO.selectByIdDiretor(idDiretor)
+            let dadosDiretor = await diretorDAO.selectByIdDiretor(idDiretor)
     
             //verifica de o DAO retornou os dados
             if(dadosDiretor){
@@ -270,10 +275,10 @@ const getBuscarDiretorById = async function(id){
                 
                 
                     //cria o json para retorno
-               DiretorJson.Diretor = dadosDiretor
-               DiretorJson.status_code = 200
+               diretorJson.diretor = dadosDiretor
+               diretorJson.status_code = 200
         
-                return DiretorJson
+                return diretorJson
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
