@@ -28,7 +28,7 @@ const getListarSexo = async function(){
     }
 }
 
-const getSexoById = async function(){
+const getSexoById = async function(id){
     try{
 
         let idSexo = id
@@ -37,7 +37,8 @@ const getSexoById = async function(){
         if(idSexo == '' || idSexo == undefined || isNaN(idSexo)){
             return message.ERROR_INVALID_ID 
         }else{
-            let dadosSexo = await sexoDAO.selectSexoById()
+            let dadosSexo = await sexoDAO.selectSexoById(id)
+            
 
             if(dadosSexo){
                 if(dadosSexo.length > 0){
@@ -50,11 +51,13 @@ const getSexoById = async function(){
 
                 }
             }else{
+                
                 return message.ERROR_INTERNAL_SERVER
             }
     }
 }catch(error){
     return message.ERROR_INTERNAL_SERVER_DB
+    
 }
 }
 
