@@ -64,6 +64,9 @@ const controllerFilmes = require('./controller/controller_filmes')
 const controllerGenero = require('./controller/controller_genero')
 const controllerClassificacao = require('./controller/controller_classificacao')
 const controllerAtor = require('./controller/controller_ator')
+const controllerDiretor = require('./controller/controller_diretor')
+const controllerSexo = require('./controller/controller_sexo')
+const controllerNacionalidade = require('./controller/controller_nacionalidade')
 
 /************************************************************************************ */
 
@@ -331,7 +334,7 @@ app.put('/v2/ACME_FILMES/updateClassificacao/:id', cors(), bodyParserJson,  asyn
 /*************************************  ATOR *********************************/
 
 app.get('/v2/ACME_FILMES/ator', cors(), async function(request, response){
-    let dadosAtor = await controllerAtor.getListaA()
+    let dadosAtor = await controllerAtor.getListarAtor()
 
     if(dadosAtor){
         response.json(dadosAtor)
@@ -352,10 +355,10 @@ app.post('/v2/acme_filmes/ator', cors(), bodyParserJson, async function(request,
     let dadosBody = request.body
 
     //encaminha os dados para a controller enviar para o DAO
-    let resultDadosNovaClassificacao = await controllerClassificacao.setInserirNovaClassificacao(dadosBody, contentType)
+    let resultDadosNovoAtor = await controllerAtor.setInserirNovoAtor(dadosBody, contentType)
 
-    response.status(resultDadosNovaClassificacao.status_code)
-    response.json(resultDadosNovaClassificacao)
+    response.status(resultDadosNovoAtor.status_code)
+    response.json(resultDadosNovoAtor)
 })
 
 app.get('/v2/ACME_FILMES/ator/:id', cors(), async function(request, response){
@@ -399,8 +402,153 @@ app.put('/v2/ACME_FILMES/updateAtor/:id', cors(), bodyParserJson,  async functio
 
 })
 
+/*********************************** DIRETOR  ***********************************8*/
+
+app.get('/v2/ACME_FILMES/diretor', cors(), async function(request, response){
+    let dadosDiretor = await controllerDiretor.getListarDiretor()
+
+    if(dadosDiretor){
+        response.json(dadosDiretor)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado'})
+        response.status(404)
+    }
+})
+
+app.post('/v2/acme_filmes/diretor', cors(), bodyParserJson, async function(request, response){
+
+    //Recebe o content-type com o tipo de dados encaminhado na requisição
+    let contentType = request.headers['content-type']
+
+
+    //recebe todos os dados encaminhados na requisição pelo body
+    let dadosBody = request.body
+
+    //encaminha os dados para a controller enviar para o DAO
+    let resultDadosNovoDiretor = await controllerDiretor.setInserirNovoDiretor(dadosBody, contentType)
+
+    response.status(resultDadosNovoDiretor.status_code)
+    response.json(resultDadosNovoDiretor)
+})
+
+app.get('/v2/ACME_FILMES/diretor/:id', cors(), async function(request, response){
+    
+    //recebe o id da requisição
+    let idDiretor = request.params.id
+
+    //encaminha o id para a controller buscar o filme
+    let dadosDiretor = await controllerDiretor.getBuscarDiretorById(idDiretor)
+
+
+    if(dadosDiretor){
+        response.json(dadosDiretor)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado!'})
+        response.status(404)
+    }
+    
+    
+})
+
+app.delete('/v2/ACME_FILMES/deleteDiretor/:id', cors(), async function(request,response){
+    let idDiretor = request.params.id
+
+    let dadosDiretor = await controllerDiretor.setExcluirDiretor(idDiretor)
+
+    response.status(dadosDiretor.status_code)
+    response.json(dadosDiretor)
+})
+
+app.put('/v2/ACME_FILMES/updateDiretor/:id', cors(), bodyParserJson,  async function(request,response){
+    let idDiretor = request.params.id
+    let contentType = request.headers['content-type']
+    let dadosBody = request.body
+
+    let atualizacaoDiretor = await controllerDiretor.setAtualizarDiretor(idDiretor,dadosBody, contentType)
+
+    response.status(atualizacaoDiretor.status_code)
+    response.json(atualizacaoDiretor)
+
+})
+
+/******************************* SEXO / NACIONALIDADE ***********************************/
+
+app.get('/v2/ACME_FILMES/sexo', cors(), async function(request, response){
+    let dadosSexo = await controllerSexo.getListarSexo()
+
+    if(dadosSexo){
+        response.json(dadosSexo)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado'})
+        response.status(404)
+    }
+})
+
+app.get('/v2/ACME_FILMES/sexo/:id', cors(), async function(request, response){
+    
+    
+    let idSexo = request.params.id
+
+    //encaminha o id para a controller buscar o filme
+    let dadosSexo = await controllerSexo.getSexoById(idSexo)
+
+
+    if(dadosSexo){
+        response.json(dadosSexo)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado!'})
+        response.status(404)
+    }
+    
+    
+})
+
+
+app.get('/v2/ACME_FILMES/nacionalidade', cors(), async function(request, response){
+    let dadosNacionalidade = await controllerNacionalidade.getListarNacionalidades()
+
+    if(dadosNacionalidade){
+        response.json(dadosNacionalidade)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado'})
+        response.status(404)
+    }
+})
+
+app.get('/v2/ACME_FILMES/nacionalidade/:id', cors(), async function(request, response){
+    
+    //recebe o id da requisição
+    let idNacionalidade = request.params.id
+
+    //encaminha o id para a controller buscar o filme
+    let dadosNacionalidade = await controllerNacionalidade.getNacionalidadeById(idNacionalidade)
+
+
+    if(dadosNacionalidade){
+        response.json(dadosNacionalidade)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado!'})
+        response.status(404)
+    }
+    
+    
+})
 
 
 app.listen('8080', function(){
     console.log('API funcionando!!')
 })
+
+
+/*********  ERROSSS  *********
+ * 1- POST FILMES/ATOR (ID=0);
+ * 2- UPDATE FILMES;
+ * 3- FALSO 'ERRO' NO POST GENEROS;
+ * 4- UPDATE ATOR;
+ * */
