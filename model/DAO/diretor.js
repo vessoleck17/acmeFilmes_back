@@ -92,6 +92,7 @@ const updateDiretor = async function(id, dadosDiretor){
                                             
                                             nome = '${dadosDiretor.nome}',
                                             data_nascimento = '${dadosDiretor.data_nascimento}',
+                                            data_falecimento = '${dadosDiretor.data_falecimento}
                                             biografia = '${dadosDiretor.biografia},
                                             foto = '${dadosDiretor.foto}',
                                             id_sexo = '${dadosDiretor.id_sexo}'
@@ -103,7 +104,7 @@ const updateDiretor = async function(id, dadosDiretor){
                                             
             nome = '${dadosDiretor.nome}',
             data_nascimento = '${dadosDiretor.data_nascimento}',
-            data_falecimento = '${dadosDiretor.data_falecimento}',
+            data_falecimento = null,
             biografia = '${dadosDiretor.biografia},
             foto = '${dadosDiretor.foto}',
             id_sexo = '${dadosDiretor.id_sexo}'
@@ -121,7 +122,7 @@ const updateDiretor = async function(id, dadosDiretor){
 
     }catch(error){
     
-        return false
+        return error
     } 
 }
 
@@ -136,7 +137,7 @@ const deleteDiretor = async function(id){
         return rsDiretor
 
     }catch(error){
-        return false
+        return error
     }
 }
 
