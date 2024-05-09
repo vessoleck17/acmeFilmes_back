@@ -27,7 +27,7 @@ const insertGenero = async function(dadosGenero){
         return false
         
     }catch (error){
-        return false
+        return error
     }
 }
 // atualizar genero no banco de dados
@@ -86,11 +86,13 @@ const selectGeneroById = async function(id){
         return false
     }
 }
+
+
 //função para retornar o id do genero
 const selectId = async function(){
     try{
 
-        let sql = `select cast(last_insert>id() AS DECIMAL) as id from tbl_genero limit 1`
+        let sql = `select cast(last_insert_id() AS DECIMAL) as id from tbl_genero limit 1`
         let rsGenero = await prisma.$queryRawUnsafe(sql)
 
         return rsGenero

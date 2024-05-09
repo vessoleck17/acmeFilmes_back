@@ -19,9 +19,7 @@ const insertAtor = async function(dadosAtor){
         let sql 
 
         if(
-            dadosAtor.data_falecimento!= null &&
-            dadosAtor.data_falecimento != '' &&
-            dadosAtor.data_falecimento != undefined
+           dadosAtor.data_falecimento != undefined && dadosAtor.data_falecimento !== '' 
         )
         {
             sql = `insert into tbl_ator (  nome,
@@ -39,7 +37,7 @@ const insertAtor = async function(dadosAtor){
                 '${dadosAtor.foto}',
                 '${dadosAtor.tbl_sexo_id}'
     
-    )`;
+    );`
         } else {
             sql = `insert into tbl_ator (  nome,
                 data_nascimento,
@@ -56,7 +54,7 @@ const insertAtor = async function(dadosAtor){
             '${dadosAtor.foto}',
             '${dadosAtor.tbl_sexo_id}'
     
-    )`;
+    );`
         }
 
 
@@ -68,14 +66,31 @@ const insertAtor = async function(dadosAtor){
         //$queryRawUnsafe() - serve para executar scripts com retorno de dados (selects)
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if(result)
-        return true
-        else 
-        return false
+        if(result){
+        
+            let idAtor = await selectId()
+            for(let nacionalidade of dadosAtor.id_nacionalidade){
+                sql = `insert into tbl_ator_nacionalidade(tbl_ator_id, tbl_nacionalidade_id)
+                values (
+                 ${idAtor[0].id},
+                 ${nacionalidade}
+                )`
+
+                result = await prisma.$executeRawUnsafe(sql)
+
+                if(result)
+                return true
+                else
+                return false
+            }
+        }
+        return !!result
+       
 
 
             }catch(error){
-                return error
+                console.log(error)
+                return false
             }
     
 }
@@ -118,12 +133,25 @@ const updateAtor = async function(id, dadosAtor){
         let result = await prisma.$executeRawUnsafe(sql)
         
 
-        if(result)
-        return true
-        else 
+        if(result){
+            for(let nacionalidade of dadosAtor.tbl_nacionalidade_id){
+                
+                sql=`update tbl_ator_nacionalidade set tbl_nacionalidade_id =${nacionalidade} where tbl_ator_id =${idAtor}`
+                
+                let result=await prisma.$executeRawUnsafe(sql)
+
+                if(result)
+                    continue
+                else
+                    return false
+            }
+
+            return true
+        }else
         return false
 
     }catch(error){
+        console.log(error)
         return error
     } 
 }
@@ -176,13 +204,14 @@ const selectByIdAtor = async function(id){
     return rsAtor
 
     }catch (error){
-        return false
+        return error
     }
 }
 
 
+
 //função para retornar o id do Ator
-const selectId = async function(dadosAtor){
+const selectId = async function(){
     try{
 
         //script sql para pegar o último id

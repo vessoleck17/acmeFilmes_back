@@ -235,6 +235,7 @@ app.post('/v2/acmefilmes/genero', cors(), bodyParserJson, async function(request
     //encaminha os dados para a controller enviar para o DAO
     let resultDadosNovoGenero = await controllerGenero.setInserirNovoGenero(dadosBody, contentType)
 
+    console.log(resultDadosNovoGenero)
     response.status(200)
     response.json(resultDadosNovoGenero)
 })
@@ -426,7 +427,7 @@ app.post('/v2/acme_filmes/diretor', cors(), bodyParserJson, async function(reque
     let dadosBody = request.body
 
     //encaminha os dados para a controller enviar para o DAO
-    let resultDadosNovoDiretor = await controllerDiretor.setInserirNovoDiretor(dadosBody, contentType)
+    let resultDadosNovoDiretor = await controllerDiretor.setInserirNovoDiretor(dadosBody, contentType,)
 
     response.status(resultDadosNovoDiretor.status_code)
     response.json(resultDadosNovoDiretor)

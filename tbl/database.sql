@@ -17,7 +17,7 @@ create table tbl_filme(
     references tbl_classificacao(id)
 );
 
-desc table tbl_filme;
+
 
 CREATE TABLE tbl_classificacao(
 id int not null auto_increment primary key,
@@ -335,6 +335,8 @@ insert into tbl_ator_nacionalidade(
 	2,
     1
 );
+select * from tbl_ator_nacionalidade;
+alter table tbl_ator_nacionalidade change tbl_nacionalidade tbl_nacionalidade_id int;
 
 insert into tbl_diretor_nacionalidade(
 	tbl_nacionalidade_id,
@@ -368,8 +370,24 @@ insert into tbl_filme_genero(
     5
 );
 
- select * from tbl_filme;
+ select * from tbl_nacionalidade;
  
  desc tbl_ator;
  
  show tables;
+ select cast(last_insert_id() AS DECIMAL) as id from tbl_genero limit 1;
+ 
+ select n.nome from tbl_diretor_nacionalidade as i
+            join tbl_nacionalidade as n on i.tbl_nacionalidade_id=n.id
+            join tbl_diretor as a on i.tbl_diretor_id=a.id
+            where a.id = 1;
+            
+ select n.nome from tbl_ator_nacionalidade as i 
+            join tbl_nacionalidade as n on i.tbl_nacionalidade_id=n.id
+            join tbl_ator as a on i.tbl_ator_id=a.id
+            where a.id = 1;
+            
+            select n.nome from tbl_filme_genero as i 
+            join tbl_genero as n on i.id_genero=n.id
+            join tbl_filme as a on i.id_filme=a.id
+            where a.id = 3;

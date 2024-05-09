@@ -34,7 +34,49 @@ const selectNacionalidadeById = async function(id){
     }
 }
 
+const selectNacionalidadeDiretor = async function(id){
+    try {
+        
+        let sql = `select n.nome from tbl_diretor_nacionalidade as i
+        join tbl_nacionalidade as n on i.tbl_nacionalidade_id=n.id
+        join tbl_diretor as a on i.tbl_diretor_id=a.id
+        where a.id = ${id}`;
+    
+        
+        let rsClassificacao = await prisma.$queryRawUnsafe(sql);
+
+            return rsClassificacao;
+    
+        } catch (error) {
+            return false;
+            
+        }
+}
+
+
+
+const selectNacionalidadeAtor = async function(id){
+    try {
+        
+        let sql = `select n.nome from tbl_ator_nacionalidade as i 
+        join tbl_nacionalidade as n on i.tbl_nacionalidade_id=n.id
+        join tbl_ator as a on i.tbl_ator_id=a.id
+        where a.id = ${id}`;
+    
+        
+        let rsClassificacao = await prisma.$queryRawUnsafe(sql);
+
+            return rsClassificacao;
+    
+        } catch (error) {
+            return false;
+            
+        }
+}
+
 module.exports = {
     selectAllNacionalidades,
-    selectNacionalidadeById
+    selectNacionalidadeById,
+    selectNacionalidadeDiretor,
+    selectNacionalidadeAtor
 }

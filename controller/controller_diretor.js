@@ -3,6 +3,8 @@ const message = require('../modulo/config.js')
 
 //Import do arquivo DAO que fará a comunicação com o banco de dados
 const diretorDAO = require('../model/DAO/diretor.js')
+const sexoDAO = require ('../model/DAO/sexo.js')
+const nacionalidadeDAO = require ('../model/DAO/nacionalidade.js')
 const { application } = require('express')
 
 //função para validar e inserir um novo Diretor 
@@ -18,7 +20,7 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
         if(dadosDiretor.nome == ''                || dadosDiretor.nome == undefined              || dadosDiretor.nome == null             || dadosDiretor.nome.length > 100 ||
            dadosDiretor.data_nascimento == ''     || dadosDiretor.data_nascimento == undefined   || dadosDiretor.data_nascimento == null  || dadosDiretor.data_nascimento.length != 10 ||
            dadosDiretor.foto == ''                || dadosDiretor.foto == undefined              || dadosDiretor.foto == null             || dadosDiretor.foto.length > 200 ||
-           dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia.length > 200 ||
+           dadosDiretor.biografia == ''           || dadosDiretor.biografia == undefined         || dadosDiretor.biografia == null        || dadosDiretor.biografia.length > 300 ||
            dadosDiretor.tbl_sexo_id == ''             ||  dadosDiretor.tbl_sexo_id == undefined          || dadosDiretor.tbl_sexo_id == null          || dadosDiretor.tbl_sexo_id.length > 3             
     
         ){
@@ -46,11 +48,11 @@ const setInserirNovoDiretor = async function(dadosDiretor, contentType){
             }
     
             //validação para verificar se podemos encaminhar os dados para o DAO
-            if (validateStatus = true ){
+            if (validateStatus){
     
     
                 //encaminha os dados do Diretor para o DAO inserir no BD
-                let novoDiretor = await diretorDAO.insertDiretor()
+                let novoDiretor = await diretorDAO.insertDiretor(dadosDiretor)
             
                 
     
@@ -136,7 +138,7 @@ const setAtualizarDiretor = async function(id, dadosDiretor, contentType){
     
                                 if(diretorById.length>0){
                                         
-                                    if (validateStatus ){
+                                    if (validateStatus = true ){
                             
                                         let updateDiretor = await diretorDAO.updateDiretor(idDiretor, dadosDiretor)
     
@@ -168,7 +170,6 @@ const setAtualizarDiretor = async function(id, dadosDiretor, contentType){
                             
     
                             }catch(error){
-                                console.log(error)
                                 return message.ERROR_INTERNAL_SERVER
                             }
     }
@@ -226,10 +227,19 @@ const getListarDiretor = async function(){
     
             //validação para verificar a  quantidade de itens retornados
             if(dadosDiretor.length > 0){
+
+                for(let diretores of dadosDiretor){
+                    let sexoDiretor = await sexoDAO.selectSexoById(diretores.tbl_sexo_id)
+                    let nacionalidadeDiretor = await nacionalidadeDAO.selectNacionalidadeDiretor(diretores.id)
+                    delete diretores.tbl_sexo_id
+                    diretores.sexo = sexoDiretor
+                    diretores.nacionalidade = nacionalidadeDiretor
+                }
             
             
                 //cria o json para retorno
            diretorJson.diretor = dadosDiretor
+           diretorJson.quantidade = dadosDiretor
            diretorJson.status_code = 200
     
             return diretorJson
@@ -272,6 +282,14 @@ const getBuscarDiretorById = async function(id){
     
                 //validação para verificar a  quantidade de itens retornados
                 if(dadosDiretor.length > 0){
+
+                    for(let diretores of dadosDiretor){
+                        let sexoDiretor = await sexoDAO.selectSexoById(diretores.tbl_sexo_id)
+                        let nacionalidadeDiretor = await nacionalidadeDAO.selectNacionalidadeDiretor(diretores.id)
+                        delete diretores.tbl_sexo_id
+                        diretores.sexo = sexoDiretor
+                        diretores.nacionalidade = nacionalidadeDiretor
+                    }
                 
                 
                     //cria o json para retorno
@@ -289,6 +307,7 @@ const getBuscarDiretorById = async function(id){
         }
     
         }catch(error){
+            console.log(error)
             return message.ERROR_INTERNAL_SERVER
         }
     

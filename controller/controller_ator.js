@@ -3,6 +3,8 @@ const message = require('../modulo/config.js')
 
 //Import do arquivo DAO quue fará a comunicação com o banco de dados
 const atorDAO = require('../model/DAO/ator.js')
+const sexoDAO = require ('../model/DAO/sexo.js')
+const nacionalidadeDAO = require ('../model/DAO/nacionalidade.js')
 const { application } = require('express')
 
 //função para validar e inserir um novo Ator 
@@ -17,12 +19,12 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
         //validação de campos obrigatórios ou com digitação inválida
         if(dadosAtor.nome == ''                || dadosAtor.nome == undefined              || dadosAtor.nome == null             || dadosAtor.nome.length > 100 ||
            dadosAtor.data_nascimento == ''     || dadosAtor.data_nascimento == undefined   || dadosAtor.data_nascimento == null  || dadosAtor.data_nascimento.length != 10 ||
-           dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia.length > 200 ||
+           dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia.length > 65000 ||
            dadosAtor.foto == ''                || dadosAtor.foto == undefined              || dadosAtor.foto == null             || dadosAtor.foto.length > 300 ||
            dadosAtor.tbl_sexo_id == ''             ||  dadosAtor.tbl_sexo_id == undefined          || dadosAtor.tbl_sexo_id == null          || dadosAtor.tbl_sexo_id.length > 2             
     
         ){
-            
+           
             return message.ERROR_REQUIRED_FIELDS //400
             
         }else{
@@ -50,7 +52,7 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
     
     
                 //encaminha os dados do Ator para o DAO inserir no BD
-                let novoAtor = await atorDAO.insertAtor()
+                let novoAtor = await atorDAO.insertAtor(dadosAtor)
             
                 
     
@@ -59,7 +61,7 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
                  if(novoAtor){
     
                     let idAtor = await atorDAO.selectId()
-                    dadosAtor.id = idAtor[0].id
+                    dadosAtor.id = Number(idAtor[0].id)
     
                    
                     novoAtorJson.ator = dadosAtor
@@ -132,25 +134,32 @@ const setAtualizarAtor = async function(id, dadosAtor, contentType){
                                 validateStatus = true
                             }
                             
-                            let atorById = await atorDAO.selectByIdAtor(idAtor)
+                            
     
                                 if(atorById.length>0){
                                         
-                                    if (validateStatus = true ){
+                                    if (validateStatus){
                             
-                                        let updateAtor = await atorDAO.updateAtor()
+                                        let novoAtor = await atorDAO.updateAtor(dadosAtor, idAtor)
                                         
     
-                                            if(updateAtor){
+                                        if(novoAtor){
+                                            let idAtor = await atorDAO.selectId()
+                                            dadosAtor.id = Number(idAtor[0].id)
+                                        }
+                                        if(novoAtor){
+
                                                 jsonUpdate.ator = dadosAtor
                                                 jsonUpdate.status = message.SUCESS_CREATED_ITEM.status
                                                 jsonUpdate.status_code = message.SUCESS_CREATED_ITEM.status_code
                                                 jsonUpdate.message = message.SUCESS_CREATED_ITEM.message
     
                                                 return jsonUpdate
-                                            }else{
+                                        }else
+                                        
+                                                
                                                 return message.ERROR_INTERNAL_SERVER_DB
-                                            }
+                                            
                                     }
                                     }else{
                                         return message.ERROR_NOT_FOUND
@@ -225,9 +234,17 @@ const getListarAtor = async function(){
             //validação para verificar a  quantidade de itens retornados
             if(dadosAtor.length > 0){
             
-            
+                for(let atores of dadosAtor){
+                    let sexoAtor = await sexoDAO.selectSexoById(atores.tbl_sexo_id)
+                    let nacionalidadeAtor = await nacionalidadeDAO.selectNacionalidadeAtor(atores.id)
+                    delete atores.tbl_sexo_id
+                    atores.sexo = sexoAtor
+                    atores.nacionalidade = nacionalidadeAtor
+                }
+    
                 //cria o json para retorno
            atorJson.Ator = dadosAtor
+           atorJson.quantidade = dadosAtor.length
            atorJson.status_code = 200
     
             return atorJson
@@ -239,6 +256,7 @@ const getListarAtor = async function(){
             return message.ERROR_INTERNAL_SERVER_DB //500
         }
         }catch(error){
+            console.log(error)
             return message.ERROR_INTERNAL_SERVER 
         }
     
@@ -270,6 +288,14 @@ const getBuscarAtorById = async function(id){
     
                 //validação para verificar a  quantidade de itens retornados
                 if(dadosAtor.length > 0){
+
+                    for(let atores of dadosAtor){
+                        let sexoAtor = await sexoDAO.selectSexoById(atores.tbl_sexo_id)
+                        let nacionalidadeAtor = await nacionalidadeDAO.selectNacionalidadeAtor(atores.id_ator)
+                        delete atores.tbl_sexo_id
+                        atores.sexo = sexoAtor
+                        atores.nacionalidade = nacionalidadeAtor
+                    }
                 
                 
                     //cria o json para retorno
@@ -287,12 +313,14 @@ const getBuscarAtorById = async function(id){
         }
     
         }catch(error){
+            console.log(error)
             return message.ERROR_INTERNAL_SERVER
         }
     
         
         
     }
+
     
     
     

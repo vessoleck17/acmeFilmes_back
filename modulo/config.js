@@ -16,7 +16,7 @@ const ERROR_CONTENT_TYPE = {status: false, status_code: 415, message: 'O content
 const ERROR_INTERNAL_SERVER = {status: false, status_code: 500, message: 'Não foi possível processar a requisição devido a um problema na camada de negócio/controle do projeto. Contate o administrador da API!'}
 
 /************************* Mensagens de sucesso ****************************/
-const SUCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'Item criado com suesso!!'}
+const SUCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'Item criado com sucesso!!'}
 const SUCESS_DETELE_ITEM = {status: true , status_code: 201, message: 'Item excluido com sucesso!!'}
 
 

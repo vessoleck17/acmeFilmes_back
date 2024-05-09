@@ -32,7 +32,8 @@ const insertFilme = async function(dadosFilme){
                 data_lancamento,
                 data_relancamento,
                 foto_capa,
-                valor_unitario
+                valor_unitario,
+                id_classificacao
                 
     ) values (
                 '${dadosFilme.nome}',
@@ -41,7 +42,8 @@ const insertFilme = async function(dadosFilme){
                 '${dadosFilme.data_lancamento}',
                 '${dadosFilme.data_relancamento}',
                 '${dadosFilme.foto_capa}',
-                '${dadosFilme.valor_unitario}'
+                '${dadosFilme.valor_unitario}',
+                '${dadosFilme.id_classificacao}'
     
     )`;
         } else {
@@ -51,7 +53,8 @@ const insertFilme = async function(dadosFilme){
                 data_lancamento,
                 data_relancamento,
                 foto_capa,
-                valor_unitario
+                valor_unitario,
+                id_classificacao
                 
     ) values (
                 '${dadosFilme.nome}',
@@ -60,7 +63,8 @@ const insertFilme = async function(dadosFilme){
                 '${dadosFilme.data_lancamento}',
                 null,
                 '${dadosFilme.foto_capa}',
-                '${dadosFilme.valor_unitario}'
+                '${dadosFilme.valor_unitario}',
+                '${dadosFilme.id_classificacao}'
     
     )`;
         }
@@ -92,7 +96,7 @@ const insertFilme = async function(dadosFilme){
 const updateFilmes = async function(id, dadosFilme){
     try{
 
-        let idFilme = id
+    
         let sql 
         
         if(
@@ -108,9 +112,10 @@ const updateFilmes = async function(id, dadosFilme){
                                             data_lancamento = '${dadosFilme.data_lancamento}',
                                             data_relancamento = '${dadosFilme.data_relancamento}',
                                             foto_capa = '${dadosFilme.foto_capa}',
-                                            valor_unitario = '${dadosFilme.valor_unitario}'
+                                            valor_unitario = '${dadosFilme.valor_unitario}',
+                                            id_classificacao = '${dadosFilme.id_classificacao}'
                 
-                 where id = ${idFilme}`
+                 where id = ${id}`
 
                  console.log(sql)
         }else{
@@ -122,10 +127,10 @@ const updateFilmes = async function(id, dadosFilme){
                 data_lancamento = '${dadosFilme.data_lancamento}',
                 data_relancamento = null,
                 foto_capa = '${dadosFilme.foto_capa}',
-                valor_unitario = '${dadosFilme.valor_unitario}'
+                valor_unitario = '${dadosFilme.valor_unitario}',
+                id_classificacao = '${dadosFilme.id_classificacao}'
 
-              where id = ${idFilme}`
-              console.log(sql)
+              where id = ${id}`
         }
 
         let result = await prisma.$executeRawUnsafe(sql)
@@ -137,7 +142,7 @@ const updateFilmes = async function(id, dadosFilme){
 
     }catch(error){
     
-        return false
+        return error
     } 
 }
 

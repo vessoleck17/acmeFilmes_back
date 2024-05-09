@@ -11,8 +11,9 @@ const {PrismaClient} = require('@prisma/client');
 //Instancia da classe PrismaClient
 const prisma = new PrismaClient();
 
-//função para inserir um Ator no Banco de dados
+//função para inserir um diretor no Banco de dados
 const insertDiretor = async function(dadosDiretor){
+ 
     
     try{
 
@@ -26,16 +27,18 @@ const insertDiretor = async function(dadosDiretor){
         {
             sql = `insert into tbl_diretor (  nome,
                 data_nascimento,
+                data_falecimento,
                 biografia,
                 foto,
-                id_sexo
+                tbl_sexo_id
                 
     ) values (
                 '${dadosDiretor.nome}',
                 '${dadosDiretor.data_nascimento}',
+                '${dadosDiretor.data_falecimento}',
                 '${dadosDiretor.biografia}',
-                '${dadosDiretor.foto},
-                '${dadosDiretor.id_sexo}'
+                '${dadosDiretor.foto}',
+                '${dadosDiretor.tbl_sexo_id}'
     
     )`;
         } else {
@@ -44,15 +47,15 @@ const insertDiretor = async function(dadosDiretor){
                 data_falecimento,
                 biografia,
                 foto,
-                id_sexo
+                tbl_sexo_id
                 
     ) values (
             '${dadosDiretor.nome}',
             '${dadosDiretor.data_nascimento}',
-            '${dadosDiretor.data_falecimento},
+             null,
             '${dadosDiretor.biografia}',
-            '${dadosDiretor.foto},
-            '${dadosDiretor.id_sexo}'
+            '${dadosDiretor.foto}',
+            '${dadosDiretor.tbl_sexo_id}'
     
     )`;
         }
@@ -66,13 +69,30 @@ const insertDiretor = async function(dadosDiretor){
         //$queryRawUnsafe() - serve para executar scripts com retorno de dados (selects)
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if(result)
-        return true
-        else 
-        return false
+        if(result){
+        
+            let idDiretor = await selectId()
+            for(let nacionalidade of dadosDiretor.id_nacionalidade){
+                sql = `insert into tbl_diretor_nacionalidade(tbl_diretor_id, tbl_nacionalidade_id)
+                values (
+                 ${idDiretor[0].id},
+                 ${nacionalidade}
+                )`
+
+                result = await prisma.$executeRawUnsafe(sql)
+
+                if(result)
+                return true
+                else
+                return false
+            }
+        }
+        return !!result
+       
 
 
             }catch(error){
+                console.log(error)
                 return false
             }
     
@@ -115,13 +135,25 @@ const updateDiretor = async function(id, dadosDiretor){
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if(result)
-        return true
-        else 
+        if(result){
+            for(let nacionalidade of dadosDiretor.tbl_nacionalidade_id){
+                
+                sql=`update tbl_diretor_nacionalidade set tbl_nacionalidade_id =${nacionalidade} where tbl_diretor_id =${idDiretor}`
+                
+                let result=await prisma.$executeRawUnsafe(sql)
+
+                if(result)
+                    continue
+                else
+                    return false
+            }
+
+            return true
+        }else
         return false
 
     }catch(error){
-    
+        console.log(error)
         return error
     } 
 }
