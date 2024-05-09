@@ -22,7 +22,7 @@ const selectAllNacionalidades = async function(){
     }
 }
 
-const selectlNacionalidadeById = async function(){
+const selectNacionalidadeById = async function(id){
     try{
         let sql = `select * from tbl_nacionalidade where id = ${id}`
 
@@ -36,5 +36,5 @@ const selectlNacionalidadeById = async function(){
 
 module.exports = {
     selectAllNacionalidades,
-    selectlNacionalidadeById
+    selectNacionalidadeById
 }
