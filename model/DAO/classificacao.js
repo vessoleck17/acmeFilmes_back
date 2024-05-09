@@ -90,7 +90,7 @@ const selectId = async function(){
 
         return rsClassificaco
     }catch(error){
-        return false
+        return error    
     }
 }
 
