@@ -37,18 +37,23 @@ const setInserirNovoGenero = async function(dadosGenero, contentType){
                     novoGeneroJson.status_code = message.SUCESS_CREATED_ITEM.status_code
                     novoGeneroJson.message = message.SUCESS_CREATED_ITEM.message
 
+                    console.log('1')
                     return novoGeneroJson, message.SUCESS_CREATED_ITEM
+                    
 
                 }else{
+                    console.log('2')
                     return message.ERROR_INTERNAL_SERVER_DB
                 }
             }
        
         } else {
+            console.log('3')
             return message.ERROR_CONTENT_TYPE
         }
 
     }catch(error){
+        console.log('4')
         return message.ERROR_INTERNAL_SERVER
     }
 }
