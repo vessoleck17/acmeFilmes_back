@@ -17,9 +17,9 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
         //validação de campos obrigatórios ou com digitação inválida
         if(dadosAtor.nome == ''                || dadosAtor.nome == undefined              || dadosAtor.nome == null             || dadosAtor.nome.length > 100 ||
            dadosAtor.data_nascimento == ''     || dadosAtor.data_nascimento == undefined   || dadosAtor.data_nascimento == null  || dadosAtor.data_nascimento.length != 10 ||
-           dadosAtor.foto == ''                || dadosAtor.foto == undefined              || dadosAtor.foto == null             || dadosAtor.foto.length > 200 ||
-           dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia > 200 ||
-           dadosAtor.id_sexo == ''             ||  dadosAtor.id_sexo == undefined          || dadosAtor.id_sexo == null          || dadosAtor.id-sexo > 3             
+           dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia.length > 200 ||
+           dadosAtor.foto == ''                || dadosAtor.foto == undefined              || dadosAtor.foto == null             || dadosAtor.foto.length > 300 ||
+           dadosAtor.tbl_sexo_id == ''             ||  dadosAtor.tbl_sexo_id == undefined          || dadosAtor.tbl_sexo_id == null          || dadosAtor.tbl_sexo_id.length > 2             
     
         ){
             
@@ -31,7 +31,7 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
     
     
             //validação da data de relançamento, já que ela não é obrigatória no BD
-            if(dadosAtor.data_falescimento != null && dadosAtor.data_falecimento !='' && dadosAtor.data_falecimento != undefined){
+            if(dadosAtor.data_falecimento != null && dadosAtor.data_falecimento !='' && dadosAtor.data_falecimento != undefined){
                
                
                //validação para verificar se a data esta com qtde de digitos corretos
@@ -46,11 +46,11 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
             }
     
             //validação para verificar se podemos encaminhar os dados para o DAO
-            if (validateStatus ){
+            if (validateStatus=true){
     
     
                 //encaminha os dados do Ator para o DAO inserir no BD
-                let novoAtor = await atorDAO.insertAtor(dadosAtor)
+                let novoAtor = await atorDAO.insertAtor()
             
                 
     
@@ -83,6 +83,7 @@ const setInserirNovoAtor = async function(dadosAtor, contentType){
         }
     
     } catch (error){
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER // 500 erro na controller 
     }
     
@@ -107,12 +108,12 @@ const setAtualizarAtor = async function(id, dadosAtor, contentType){
                                         
                         if( dadosAtor.nome == ''                || dadosAtor.nome == undefined              || dadosAtor.nome == null             || dadosAtor.nome.length > 100 ||
                             dadosAtor.data_nascimento == ''     || dadosAtor.data_nascimento == undefined   || dadosAtor.data_nascimento == null  || dadosAtor.data_nascimento.length != 10 ||
-                            dadosAtor.foto == ''                || dadosAtor.foto == undefined              || dadosAtor.foto == null             || dadosAtor.foto.length > 200 ||
-                            dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia > 300 ||
-                            dadosAtor.id_sexo == ''             ||  dadosAtor.id_sexo == undefined          || dadosAtor.id_sexo == null          || dadosAtor.id_sexo > 100             
+                            dadosAtor.biografia == ''           || dadosAtor.biografia == undefined         || dadosAtor.biografia == null        || dadosAtor.biografia.length > 300 ||
+                            dadosAtor.foto == ''                || dadosAtor.foto == undefined              || dadosAtor.foto == null             || dadosAtor.foto.length > 300 ||
+                            dadosAtor.tbl_sexo_id == ''             ||  dadosAtor.tbl_sexo_id == undefined          || dadosAtor.tbl_sexo_id == null          || dadosAtor.tbl_sexo_id.length > 2             
                         
         ){
-                                    
+                        
                           return message.ERROR_REQUIRED_FIELDS //400
                                     
                         }else{
@@ -135,9 +136,10 @@ const setAtualizarAtor = async function(id, dadosAtor, contentType){
     
                                 if(atorById.length>0){
                                         
-                                    if (validateStatus ){
+                                    if (validateStatus = true ){
                             
-                                        let updateAtor = await atorDAO.updateAtor(idAtor, dadosAtor)
+                                        let updateAtor = await atorDAO.updateAtor()
+                                        
     
                                             if(updateAtor){
                                                 jsonUpdate.ator = dadosAtor
@@ -167,6 +169,7 @@ const setAtualizarAtor = async function(id, dadosAtor, contentType){
                             
     
                             }catch(error){
+                                console.log(error)
                                 return message.ERROR_INTERNAL_SERVER
                             }
     }
@@ -227,7 +230,7 @@ const getListarAtor = async function(){
            atorJson.Ator = dadosAtor
            atorJson.status_code = 200
     
-            returnatorJson
+            return atorJson
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
