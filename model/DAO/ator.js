@@ -29,15 +29,15 @@ const insertAtor = async function(dadosAtor){
                 data_falecimento,
                 biografia,
                 foto,
-                id_sexo
+                tbl_sexo_id
                 
     ) values (
                 '${dadosAtor.nome}',
                 '${dadosAtor.data_nascimento}',
-                null,
+                '${dadosAtor.data_falecimento}',
                 '${dadosAtor.biografia}',
-                '${dadosAtor.foto},
-                '${dadosAtor.id_sexo}'
+                '${dadosAtor.foto}',
+                '${dadosAtor.tbl_sexo_id}'
     
     )`;
         } else {
@@ -46,15 +46,15 @@ const insertAtor = async function(dadosAtor){
                 data_falecimento,
                 biografia,
                 foto,
-                id_sexo
+                tbl_sexo_id
                 
     ) values (
             '${dadosAtor.nome}',
             '${dadosAtor.data_nascimento}',
-            '${dadosAtor.data_falecimento},
+            null,
             '${dadosAtor.biografia}',
-            '${dadosAtor.foto},
-            '${dadosAtor.id_sexo}'
+            '${dadosAtor.foto}',
+            '${dadosAtor.tbl_sexo_id}'
     
     )`;
         }
@@ -75,16 +75,14 @@ const insertAtor = async function(dadosAtor){
 
 
             }catch(error){
-                return false
+                return error
             }
     
 }
 
-//função para listar todos os Ator
+//função para atualizar um ator
 const updateAtor = async function(id, dadosAtor){
     try{
-
-        let idAtor = id
         let sql 
         
         if(
@@ -97,28 +95,28 @@ const updateAtor = async function(id, dadosAtor){
                                             nome = '${dadosAtor.nome}',
                                             data_nascimento = '${dadosAtor.data_nascimento}',
                                             data_falecimento = '${dadosAtor.data_falecimento}',
-                                            biografia = '${dadosAtor.biografia},
+                                            biografia = '${dadosAtor.biografia}',
                                             foto = '${dadosAtor.foto}',
-                                            id_sexo = '${dadosAtor.id_sexo}'
+                                            tbl_sexo_id = '${dadosAtor.tbl_sexo_id}'
                 
-                 where id = ${idAtor}`
+                 where id = ${id}`
 
-                 console.log(sql)
         }else{
             sql = `update tbl_ator set 
                                             
             nome = '${dadosAtor.nome}',
             data_nascimento = '${dadosAtor.data_nascimento}',
             data_falecimento = null,
-            biografia = '${dadosAtor.biografia},
+            biografia = '${dadosAtor.biografia}',
             foto = '${dadosAtor.foto}',
-            id_sexo = '${dadosAtor.id_sexo}'
+            tbl_sexo_id = '${dadosAtor.tbl_sexo_id}'
 
-              where id = ${idAtor}`
-              console.log(sql)
+              where id = ${id}`
+              
         }
 
         let result = await prisma.$executeRawUnsafe(sql)
+        
 
         if(result)
         return true
@@ -126,8 +124,7 @@ const updateAtor = async function(id, dadosAtor){
         return false
 
     }catch(error){
-    
-        return false
+        return error
     } 
 }
 
