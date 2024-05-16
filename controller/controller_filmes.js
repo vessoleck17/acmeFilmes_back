@@ -10,6 +10,7 @@ const message = require('../modulo/config.js')
 
 //Import do arquivo DAO quue fará a comunicação com o banco de dados
 const filmeDAO = require('../model/DAO/filmes.js')
+const classificacaoDAO = require('../model/DAO/classificacao.js')
 const { application } = require('express')
 
 //função para validar e inserir um novo filme 
@@ -229,6 +230,7 @@ const getListarFilmes = async function(){
 
     //chama a função do DAO para retornar os dados da tabela de filme
     let dadosFilmes = await filmeDAO.selectAllFilmes();
+    
 
 
     //verifica de o DAO retornou os dados
@@ -236,6 +238,14 @@ const getListarFilmes = async function(){
 
         //validação para verificar a  quantidade de itens retornados
         if(dadosFilmes.length > 0){
+
+            for(let filme of dadosFilmes){
+                filme.classificacao = await classificacaoDAO.selectClassificacaoById(filme.id_classificacao)
+                delete filme.id_classificacao
+                filme.atores = await filmeDAO.selectAtores(filme.id)
+                filme.diretores = await filmeDAO.selectDiretores(filme.id)
+                filme.generos = await filmeDAO.selectGeneros(filme.id)
+            }
         
         
             //cria o json para retorno
@@ -282,6 +292,14 @@ const getBuscarFilme = async function(id){
 
             //validação para verificar a  quantidade de itens retornados
             if(dadosFilmes.length > 0){
+
+                for(let filme of dadosFilmes){
+                    filme.classificacao = await classificacaoDAO.selectClassificacaoById(filme.id_classificacao)
+                    delete filme.id_classificacao
+                    filme.atores = await filmeDAO.selectAtores(filme.id)
+                    filme.diretores = await filmeDAO.selectDiretores(filme.id)
+                    filme.generos = await filmeDAO.selectGeneros(filme.id)
+                }
             
             
                 //cria o json para retorno
@@ -326,6 +344,14 @@ const getFilmeByNome = async function(nome){
     
                 //validação para verificar a  quantidade de itens retornados
                 if(dadosFilmes.length > 0){
+
+                    for(let filme of dadosFilmes){
+                        filme.classificacao=await classificacaoDAO.selectClassificacaoById(filme.id_classificacao)
+                        delete filme.id_classificacao
+                        filme.atores=await filmeDAO.selectAtores(filme.id)
+                        filme.diretores=await filmeDAO.selectDiretores(filme.id)
+                        filme.generos=await filmeDAO.selectGeneros(filme.id)
+                    } 
                 
                 
                     //cria o json para retorno
