@@ -226,11 +226,22 @@ const selectId = async function(){
     }
 }
 
+const selectAtorByNome = async function (nome){
+    try{
+        let sql = `select * from tbl_ator where nome like "%${nome}%"`
+       let rsAtores = await prisma.$queryRawUnsafe(sql)
+       return rsAtores
+    }catch(error){
+        return false
+    }
+}
+
 module.exports = {
     insertAtor,
     updateAtor,
     deleteAtor,
     selectAllAtores,
     selectByIdAtor,
-    selectId
+    selectId,
+    selectAtorByNome
 }
