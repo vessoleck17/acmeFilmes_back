@@ -243,7 +243,7 @@ const getListarAtor = async function(){
                 }
     
                 //cria o json para retorno
-           atorJson.Ator = dadosAtor
+           atorJson.ator = dadosAtor
            atorJson.quantidade = dadosAtor.length
            atorJson.status_code = 200
     
