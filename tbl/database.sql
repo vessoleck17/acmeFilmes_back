@@ -183,9 +183,6 @@ create table tbl_filme_genero(
 );
 
 desc tbl_classificacao;
-
-
-
 desc tbl_filme;
 
 insert into tbl_filme(nome, sinopse, duracao, data_lancamento, data_relancamento, foto_capa, valor_unitario, id_classificacao)values
