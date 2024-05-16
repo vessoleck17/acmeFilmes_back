@@ -71,6 +71,7 @@ const insertDiretor = async function(dadosDiretor){
 
         if(result){
         
+            
             let idDiretor = await selectId()
             for(let nacionalidade of dadosDiretor.id_nacionalidade){
                 sql = `insert into tbl_diretor_nacionalidade(tbl_diretor_id, tbl_nacionalidade_id)
@@ -225,11 +226,22 @@ const selectId = async function(dadosDiretor){
     }
 }
 
+const selectDiretorByNome = async function (nome){
+    try{
+        let sql = `select * from tbl_diretor where nome like "%${nome}%"`
+        let rsDiretores = await prisma.$queryRawUnsafe(sql)
+        return rsDiretores
+    }catch(error){
+        return false
+    }
+}
+
 module.exports = {
     insertDiretor,
     updateDiretor,
     deleteDiretor,
     selectAllDiretores,
     selectByIdDiretor,
-    selectId
+    selectId,
+    selectDiretorByNome
 }
