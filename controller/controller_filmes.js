@@ -129,7 +129,7 @@ const setAtualizarFilme = async function (id, dadosFilme, contentType) {
 
                         if (validateStatus) {
 
-                            let updateFilme = await filmeDAO.updateFilmes()
+                            let updateFilme = await filmeDAO.updateFilmes(id, dadosFilme)
 
                             console.log(updateFilme)
 
@@ -214,12 +214,16 @@ const getListarFilmes = async function () {
                     filme.generos = await filmeDAO.selectGeneros(filme.id)
                 }
 
+                
 
                 //cria o json para retorno
                 filmesJson.filme = dadosFilmes
                 filmesJson.status_code = 200
 
+
                 return filmesJson
+
+                
             } else {
                 return message.ERROR_NOT_FOUND //404
             }
